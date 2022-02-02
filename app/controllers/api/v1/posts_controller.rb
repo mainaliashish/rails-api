@@ -1,7 +1,7 @@
 module Api
   module V1
     class PostsController < ApplicationController
-      before_action :authenticate_user!
+      before_action :authenticate_user!, except: %i[index]
       before_action :set_api_v1_post, only: %i[show update destroy]
 
       def index
@@ -16,7 +16,6 @@ module Api
 
       def create
         @api_v1_post = Api::V1::Post.new(api_v1_post_params)
-
         if @api_v1_post.save
           render json: @api_v1_post, status: :created, location: @api_v1_post
         else
@@ -43,7 +42,7 @@ module Api
       end
 
       def api_v1_post_params
-        params.require(:api_v1_post).permit(:title, :content)
+        params.require(:api_v1_post).permit(:title, :content).merge(user_id: current_user.id)
       end
     end
   end
