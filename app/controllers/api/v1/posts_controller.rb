@@ -38,7 +38,7 @@ module Api
       private
 
       def set_api_v1_post
-        @api_v1_post = Api::V1::Post.find(params[:id])
+        @api_v1_post = Api::V1::Post.find_by_id(params[:id])
       end
 
       def api_v1_post_params
