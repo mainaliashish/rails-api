@@ -13,7 +13,7 @@ RSpec.describe Api::V1::Post, type: :model do
     end
 
     it 'is valid with post title' do
-      post = build(:api_v1_post)
+      post = build(:api_v1_post, user_id: User.first.id)
       expect(post).to be_valid
     end
 
@@ -31,7 +31,7 @@ RSpec.describe Api::V1::Post, type: :model do
 
     it 'should have a unique title' do
       title = "I am a sample title #{rand.to_s[2..9]} "
-      create(:api_v1_post, title: title)
+      create(:api_v1_post, title: title, user_id: User.first.id)
       expect { create(:api_v1_post, title: title) }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
@@ -43,14 +43,14 @@ RSpec.describe Api::V1::Post, type: :model do
     end
 
     it 'is valid with post content' do
-      post = build(:api_v1_post)
+      post = build(:api_v1_post, user_id: User.first.id)
       expect(post).to be_valid
     end
 
     it "is not valid with post content less than #{MIN_CONTENT_LENGTH}" do
       content = 'a' * 5
-      post_one = build(:api_v1_post, content: content)
-      expect(post_one).to_not be_valid
+      post = build(:api_v1_post, content: content)
+      expect(post).to_not be_valid
     end
 
     it "is not valid with post content greater than #{MAX_CONTENT_LENGTH}" do
@@ -59,4 +59,13 @@ RSpec.describe Api::V1::Post, type: :model do
       expect(post_one).to_not be_valid
     end
   end
+
+  context 'it should have a post creator' do
+    it 'is not valid without post creator' do
+      post = build(:api_v1_post, user_id: nil)
+      expect(post).to_not be_valid
+    end
+
+  end
+  
 end
