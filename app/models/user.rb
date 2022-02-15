@@ -11,5 +11,5 @@ class User < ApplicationRecord
             format: { with: VALID_EMAIL_REGEX },
             length: { maximum: 105 }
   validates :password, presence: true, length: { minimum: 6, maximum: 50 }
-  has_many :posts, dependent: :destroy
+  has_many :posts, dependent: :destroy, class_name: 'Api::V1::Post'
 end
