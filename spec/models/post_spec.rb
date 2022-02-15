@@ -9,6 +9,7 @@ RSpec.describe Api::V1::Post, type: :model do
   context 'it should validate the post title' do
     it 'is not valid without post title' do
       post = build(:api_v1_post, title: nil)
+      # binding.break
       expect(post).to_not be_valid
     end
 
