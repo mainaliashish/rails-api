@@ -8,6 +8,10 @@ RSpec.describe 'Api::V1::Posts', type: :request do
     sign_in user
   end
 
+  def create_post(post)
+    post '/api/v1/posts', params: { api_v1_post: post }
+  end
+
   context 'GET #index' do
     it 'should get the posts' do
       get '/api/v1/posts'
@@ -16,10 +20,6 @@ RSpec.describe 'Api::V1::Posts', type: :request do
   end
 
   context 'POST #create' do
-    def create_post(post)
-      post '/api/v1/posts', params: { api_v1_post: post }
-    end
-
     it 'should create a post' do
       create_post(attributes_for(:api_v1_post, user_id: user.id))
       expect(response).to have_http_status(:created)
@@ -50,6 +50,15 @@ RSpec.describe 'Api::V1::Posts', type: :request do
 
     it 'should raise exception if no post exists' do
       expect { get '/api/v1/post/10000' }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  context 'POST #destroy' do
+    it 'should destroy a post associated with user' do
+      post = create(:api_v1_post, user_id: user.id)
+      delete "/api/v1/posts/#{post.id}"
+      # binding.break
+      expect(response).to have_http_status(204)
     end
   end
 end
