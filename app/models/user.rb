@@ -3,5 +3,13 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          :registerable,
          jwt_revocation_strategy: JwtDenylist
-  has_many :posts, dependent: :destroy
+
+  VALID_EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+
+  validates :email,
+            presence: true, uniqueness: { case_sensitive: false },
+            format: { with: VALID_EMAIL_REGEX },
+            length: { maximum: 105 }
+  validates :password, presence: true, length: { minimum: 6, maximum: 50 }
+  has_many :posts, dependent: :destroy, class_name: 'Api::V1::Post'
 end
